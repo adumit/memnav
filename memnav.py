@@ -5,6 +5,14 @@ from nltk import sent_tokenize
 from itertools import chain
 
 
+def get_all_text_files(root_dir):
+    expanded_file_locations = []
+    for dirpath, dirs, files in os.walk(root_dir):
+        for fname in files:
+            if ".md" or ".txt" in fname:
+                expanded_file_locations.append(f"{dirpath}/{fname}")
+    return expanded_file_locations
+
 class MemNav:
     def __init__(self, root_dir='.'):
         """Load models, preprocess text, precompute embeddings."""
@@ -17,8 +25,8 @@ class MemNav:
         self.pair_encoder = CrossEncoder('cross-encoder/ms-marco-TinyBERT-L-6')
 
         # Load list of entries
-        self.entries = [open(self.root_dir + '/' + file).read()
-                        for file in sorted(os.listdir(root_dir))]
+        md_files = get_all_text_files(self.root_dir)
+        self.entries = [open(fpath).read() for fpath in md_files]
 
         # Tokenize entries into sentences
         self.entries = [sent_tokenize(entry.strip()) for entry in self.entries]
