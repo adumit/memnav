@@ -1,8 +1,19 @@
 from transformers import pipeline
 import os
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
-from nltk import sent_tokenize
+from nltk import sent_tokenize, download
 from itertools import chain
+
+
+def _test_nltk_download():
+    try:
+        sent_tokenize("abc")
+    except:
+        print("Could not run sent_tokenize... downloading the punkt model now.")
+        download("punkt")
+
+# Run this on startup to ensure the rest of the script will work
+_test_nltk_download()
 
 
 def get_all_text_files(root_dir):
